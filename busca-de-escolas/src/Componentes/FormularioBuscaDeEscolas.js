@@ -4,7 +4,7 @@ class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '' };
+        this.state = {tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: [] };
     }
 
     componentWillMount() {
@@ -41,8 +41,23 @@ class FormularioBuscaDeEscolas extends React.Component{
         console.log('Nome Escola | ', this.nomeEscola.value);
         console.log('Tipo Escola Escolhida | ', this.state.tipoEscolaSelect);
         console.log('DRE Escolhida |  ', this.state.dreSelect);
-
         console.log('------------------------------------------------------------------------------------------');
+
+        fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?tipoesc=' + this.state.tipoEscolaSelect + '&search=' + this.nomeEscola.value + '&dre=' +  this.state.dreSelect)
+            .then(resposta =>{
+                if (resposta.ok){
+                    return resposta.json();
+                }else {
+                    console.log('Não foi possivel buscar as escolas filtradas');
+                    throw new Error('Não foi possivel buscar as escolas filtradas')
+                }
+            })
+            .then(lista_escolas_filtradas =>{
+                this.setState({listaDeEscolasRetornadasPelaBusca: lista_escolas_filtradas.results});
+                console.log('Lista de Escolas Retornadas pela Busca : ', lista_escolas_filtradas);
+            })
+
+
     }
 
     escoheTipoEscola(evento){
