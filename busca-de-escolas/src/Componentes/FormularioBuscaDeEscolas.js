@@ -4,7 +4,7 @@ class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {nomeEscola: '', tipoEscola: [], dres: [] };
+        this.state = {nomeEscola: '', tipoEscola: [], tipoEscolaSelect: '', dres: [] };
     }
 
     buscaEscolas(evento){
@@ -44,6 +44,11 @@ class FormularioBuscaDeEscolas extends React.Component{
             })
     }
 
+    escoheTipoEscola(evento){
+        this.setState({tipoEscolaSelect: evento.target.value });
+        console.log('Função escoheTipoEscola: ', this.state.tipoEscolaSelect);
+    }
+
     render() {
         return (
             <form id="formulario_busca_escola" onSubmit={this.buscaEscolas.bind(this)}>
@@ -56,7 +61,7 @@ class FormularioBuscaDeEscolas extends React.Component{
                         </article>
                         <article className="form-group col-md-4">
                             <label htmlFor="busca_tipo_de_escola">Tipo de Escola</label>
-                            <select value={this.state.tipoEscola.tipoesc} className="form-control" id="busca_tipo_de_escola" name="busca_tipo_de_escola">
+                            <select value={this.state.tipoEscolaSelect} onChange={this.escoheTipoEscola.bind(this)} className="form-control" id="busca_tipo_de_escola" name="busca_tipo_de_escola">
                                 <option value="">Selecione uam opção</option>
                                 {
                                     this.state.tipoEscola.map(tipoEscola =>{
