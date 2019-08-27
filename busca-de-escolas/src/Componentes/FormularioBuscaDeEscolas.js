@@ -4,7 +4,7 @@ class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {nomeEscola: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '' };
+        this.state = {tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '' };
     }
 
     componentWillMount() {
@@ -38,6 +38,7 @@ class FormularioBuscaDeEscolas extends React.Component{
     buscaEscolas(evento){
         evento.preventDefault();
         console.log(' ----------------------- Função buscaEscolas -----------------------');
+        console.log('Nome Escola | ', this.nomeEscola.value);
         console.log('Tipo Escola Escolhida | ', this.state.tipoEscolaSelect);
         console.log('DRE Escolhida |  ', this.state.dreSelect);
 
@@ -60,7 +61,7 @@ class FormularioBuscaDeEscolas extends React.Component{
                     <section className="form-row">
                         <article className="form-group col-md-4">
                             <label htmlFor="busca_escola">Busca de Escolas</label>
-                            <input type="text" ref={input => this.nomeEscola = input } className="form-control" id="busca_escola" name="busca_escola" placeholder="Digite o nome de uma escola"/>
+                            <input type="text" value={this.state.nomeEscola} ref={input => this.nomeEscola = input } className="form-control" id="busca_escola" name="busca_escola" placeholder="Digite o nome de uma escola"/>
                         </article>
                         <article className="form-group col-md-4">
                             <label htmlFor="busca_tipo_de_escola">Tipo de Escola</label>
