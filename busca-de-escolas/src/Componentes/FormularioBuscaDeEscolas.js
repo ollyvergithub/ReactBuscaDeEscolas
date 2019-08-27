@@ -4,16 +4,7 @@ class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {nomeEscola: '', tipoEscola: [], tipoEscolaSelect: '', dres: [] };
-    }
-
-    buscaEscolas(evento){
-        evento.preventDefault();
-        console.log('Função buscaEscolas ---------------------------------------------');
-        console.log('Tipo Escola | ', this.state.tipoEscola);
-        console.log('DRE |  ', this.state.dres);
-
-        console.log('------------------------------------------------------------------------------------------');
+        this.state = {nomeEscola: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '' };
     }
 
     componentWillMount() {
@@ -44,9 +35,21 @@ class FormularioBuscaDeEscolas extends React.Component{
             })
     }
 
+    buscaEscolas(evento){
+        evento.preventDefault();
+        console.log(' ----------------------- Função buscaEscolas -----------------------');
+        console.log('Tipo Escola Escolhida | ', this.state.tipoEscolaSelect);
+        console.log('DRE Escolhida |  ', this.state.dreSelect);
+
+        console.log('------------------------------------------------------------------------------------------');
+    }
+
     escoheTipoEscola(evento){
         this.setState({tipoEscolaSelect: evento.target.value });
-        console.log('Função escoheTipoEscola: ', this.state.tipoEscolaSelect);
+    }
+
+    escolheDre(evento){
+        this.setState({dreSelect: evento.target.value });
     }
 
     render() {
@@ -68,14 +71,13 @@ class FormularioBuscaDeEscolas extends React.Component{
                                         return (
                                             <option value={tipoEscola.tipoesc} key={tipoEscola.tipoesc}>{tipoEscola.tipoesc}</option>
                                         );
-
                                     })
                                 }
                             </select>
                         </article>
                         <article className="form-group col-md-4">
                             <label htmlFor="busca_dre">Busca DRE</label>
-                            <select className="form-control" id="busca_dre" name="busca_dre">
+                            <select value={this.state.dreSelect} onChange={this.escolheDre.bind(this)} className="form-control" id="busca_dre" name="busca_dre">
                                 <option value="">Selecione uam opção</option>
                                 {
                                     this.state.dres.map(dre =>{
