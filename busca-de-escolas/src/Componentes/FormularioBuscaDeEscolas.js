@@ -2,7 +2,7 @@ import React from 'react';
 
 // Meus Componentes
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
-import InputBuscaEscola from './InputBuscaEscola';
+import InputCustomizado from './InputCustomizado';
 
 class FormularioBuscaDeEscolas extends React.Component{
 
@@ -82,19 +82,7 @@ class FormularioBuscaDeEscolas extends React.Component{
                         <legend>Busca de Escolas</legend>
                         <section className="form-row">
 
-                            <InputBuscaEscola value={this.state.nomeEscolaInput} escolheEscola ={this.escolheEscola.bind(this)} />
-
-                            {/*<FormInput type="password" name='password' label='senha' value={this.state.password}
-                                       handleChange={this.handelChange}
-                                       required/>*/}
-
-
-                           {/*
-                            <article className="form-group col-md-4">
-                                <label htmlFor="busca_escola">Busca de Escolas</label>
-                                <input type="text" value={this.state.nomeEscolaInput} ref={input => this.nomeEscolaInput = input } className="form-control" id="busca_escola" name="busca_escola" placeholder="Digite o nome de uma escola"/>
-                            </article>
-                            */}
+                            <InputCustomizado type="text" className='form-control' id='busca_escola' value={this.state.nomeEscolaInput} escolheEscola ={this.escolheEscola.bind(this)} />
 
                             <article className="form-group col-md-4">
                                 <label htmlFor="busca_tipo_de_escola">Tipo de Escola</label>
