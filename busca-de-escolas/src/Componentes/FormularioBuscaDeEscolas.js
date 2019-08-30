@@ -3,6 +3,7 @@ import React from 'react';
 // Meus Componentes
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
 import InputCustomizado from './InputCustomizado';
+import SelectCustomizado from './SelectCustomizado';
 
 class FormularioBuscaDeEscolas extends React.Component{
 
@@ -82,34 +83,20 @@ class FormularioBuscaDeEscolas extends React.Component{
                         <legend>Busca de Escolas</legend>
                         <section className="form-row">
 
-                            <InputCustomizado type="text" className='form-control' id='busca_escola' value={this.state.nomeEscolaInput} escolheEscola ={this.escolheEscola.bind(this)} />
+                            <InputCustomizado type="text" className='form-control' id='busca_escola' value={this.state.nomeEscolaInput} onChangeEscolheEscola ={this.escolheEscola.bind(this)} label="Escolha uma escola" />
 
                             <article className="form-group col-md-4">
-                                <label htmlFor="busca_tipo_de_escola">Tipo de Escola</label>
-                                <select value={this.state.tipoEscolaSelect} onChange={this.escoheTipoEscola.bind(this)} className="form-control" id="busca_tipo_de_escola" name="busca_tipo_de_escola">
-                                    <option value="">Selecione uam opção</option>
-                                    {
-                                        this.state.tipoEscola.map(tipoEscola =>{
-                                            return (
-                                                <option value={tipoEscola.tipoesc} key={tipoEscola.tipoesc}>{tipoEscola.tipoesc}</option>
-                                            );
-                                        })
-                                    }
-                                </select>
+
+                                <SelectCustomizado campoApiValue="tipoesc" retornoApi={this.state.tipoEscola} value={this.state.tipoEscolaSelect} onChange ={this.escoheTipoEscola.bind(this)} className="form-control" id="busca_tipo_de_escola" name="busca_tipo_de_escola" label="Escolha um Tipo de Escola"/>
+
                             </article>
+
                             <article className="form-group col-md-4">
-                                <label htmlFor="busca_dre">Busca DRE</label>
-                                <select value={this.state.dreSelect} onChange={this.escolheDre.bind(this)} className="form-control" id="busca_dre" name="busca_dre">
-                                    <option value="">Selecione uam opção</option>
-                                    {
-                                        this.state.dres.map(dre =>{
-                                            return (
-                                                <option value={dre.dre} key={dre.dre}>{dre.diretoria}</option>
-                                            );
-                                        })
-                                    }
-                                </select>
+                                {/*Os parametros campoApiValue e campoApiExibicao, são os campos retornados pela API*/}
+                                <SelectCustomizado campoApiValue="dre" campoApiExibicao='diretoria' retornoApi={this.state.dres} value={this.state.dreSelect} onChange ={this.escolheDre.bind(this)} className="form-control" id="busca_dre" name="busca_dre" label="Escolha uma DRE"/>
+
                             </article>
+
                             <button id="form_submit" name="form_submit" className="btn btn-primary" type="submit">Buscar
                                 Escolas
                             </button>
