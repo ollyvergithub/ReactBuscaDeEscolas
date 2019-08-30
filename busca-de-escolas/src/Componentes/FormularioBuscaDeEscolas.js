@@ -2,12 +2,13 @@ import React from 'react';
 
 // Meus Componentes
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
+import InputBuscaEscola from './InputBuscaEscola';
 
 class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {nomeEscolaInputPreenchido: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: [] };
+        this.state = {nomeEscolaInput: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: [] };
     }
 
     componentWillMount() {
@@ -39,12 +40,12 @@ class FormularioBuscaDeEscolas extends React.Component{
     buscaEscolas(evento){
         evento.preventDefault();
         console.log(' ----------------------- Função buscaEscolas -----------------------');
-        console.log('Nome Escola | ', this.nomeEscolaInput.value);
+        console.log('Nome Escola | ', this.state.nomeEscolaInput);
         console.log('Tipo Escola Escolhida | ', this.state.tipoEscolaSelect);
         console.log('DRE Escolhida |  ', this.state.dreSelect);
         console.log('------------------------------------------------------------------------------------------');
 
-        fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?tipoesc=' + this.state.tipoEscolaSelect + '&search=' + this.nomeEscolaInput.value + '&dre=' +  this.state.dreSelect)
+        fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?tipoesc=' + this.state.tipoEscolaSelect + '&search=' + this.state.nomeEscolaInput + '&dre=' +  this.state.dreSelect)
             .then(resposta =>{
                 if (resposta.ok){
                     return resposta.json();
@@ -67,6 +68,12 @@ class FormularioBuscaDeEscolas extends React.Component{
         this.setState({dreSelect: evento.target.value });
     }
 
+    escolheEscola(evento){
+        evento.preventDefault();
+        this.setState({nomeEscolaInput:evento.target.value })
+
+    }
+
     render() {
         return (
             <div>
@@ -74,10 +81,21 @@ class FormularioBuscaDeEscolas extends React.Component{
                     <fieldset>
                         <legend>Busca de Escolas</legend>
                         <section className="form-row">
+
+                            <InputBuscaEscola value={this.state.nomeEscolaInput} escolheEscola ={this.escolheEscola.bind(this)} />
+
+                            {/*<FormInput type="password" name='password' label='senha' value={this.state.password}
+                                       handleChange={this.handelChange}
+                                       required/>*/}
+
+
+                           {/*
                             <article className="form-group col-md-4">
                                 <label htmlFor="busca_escola">Busca de Escolas</label>
                                 <input type="text" value={this.state.nomeEscolaInput} ref={input => this.nomeEscolaInput = input } className="form-control" id="busca_escola" name="busca_escola" placeholder="Digite o nome de uma escola"/>
                             </article>
+                            */}
+
                             <article className="form-group col-md-4">
                                 <label htmlFor="busca_tipo_de_escola">Tipo de Escola</label>
                                 <select value={this.state.tipoEscolaSelect} onChange={this.escoheTipoEscola.bind(this)} className="form-control" id="busca_tipo_de_escola" name="busca_tipo_de_escola">
