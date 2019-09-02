@@ -4,12 +4,14 @@ import React from 'react';
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
 import InputCustomizado from './InputCustomizado';
 import SelectCustomizado from './SelectCustomizado';
+import Autocomplete from './Autocomplete';
+import '../css/style.css';
 
 class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {nomeEscolaInput: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: [] };
+        this.state = {nomeEscolaInput: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: [], escolas_autocomplete: [] };
     }
 
     componentWillMount() {
@@ -71,7 +73,21 @@ class FormularioBuscaDeEscolas extends React.Component{
 
     escolheEscola(evento){
         evento.preventDefault();
-        this.setState({nomeEscolaInput:evento.target.value })
+        this.setState({nomeEscolaInput:evento.target.value });
+        fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?search='+this.state.nomeEscolaInput)
+            .then(resposta => {
+                if (resposta.ok){
+                    return resposta.json();
+                }else {
+                    console.log('Não foi possível escola Autocomplete');
+                    throw new Error('Não foi possível escola Autocomplete');
+                }
+            })
+            .then(escolas_autocomplete =>{
+                console.log('Escolas Autocomplete', escolas_autocomplete);
+                this.setState({escolas_autocomplete: escolas_autocomplete.results});
+                console.log('This State - Escolas Autocomplete', this.state.escolas_autocomplete);
+            });
 
     }
 
@@ -83,7 +99,11 @@ class FormularioBuscaDeEscolas extends React.Component{
                         <legend>Busca de Escolas</legend>
                         <section className="form-row">
 
+                            <Autocomplete escolaAutoComplete = {this.state.escolas_autocomplete}/>
+
                             <InputCustomizado type="text" className='form-control' id='busca_escola' value={this.state.nomeEscolaInput} onChangeEscolheEscola ={this.escolheEscola.bind(this)} label="Escolha uma escola" />
+
+
 
                             <article className="form-group col-md-4">
 
