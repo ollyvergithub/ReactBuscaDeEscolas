@@ -6,7 +6,7 @@ const SelectCustomizado = ( {campoApiValue, campoApiExibicao, name, label, onCha
         <label htmlFor={name}>{label}</label>
 
         <select onChange={onChange} {...outrasProps}>
-            <option value="">Selecione uam opção</option>
+            <option value="">Selecione uma opção</option>
             {
                retornoApi.map(item =>{
                    return (

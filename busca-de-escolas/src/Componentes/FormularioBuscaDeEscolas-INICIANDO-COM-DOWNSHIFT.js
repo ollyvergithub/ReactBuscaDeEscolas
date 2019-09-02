@@ -4,7 +4,7 @@ import React from 'react';
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
 import InputCustomizado from './InputCustomizado';
 import SelectCustomizado from './SelectCustomizado';
-import Autocomplete from './Autocomplete';
+import Autocomplete from './AutocompleteComDownshift';
 
 import { render } from "react-dom";
 import Downshift from 'downshift';

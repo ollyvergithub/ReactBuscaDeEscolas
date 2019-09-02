@@ -3,7 +3,8 @@ import React from 'react';
 // Meus Componentes
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
 import SelectCustomizado from './SelectCustomizado';
-import Downshift from 'downshift';
+import AutocompleteComDownshift from './AutocompleteComDownshift';
+
 class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
@@ -68,9 +69,11 @@ class FormularioBuscaDeEscolas extends React.Component{
         document.getElementById("input-escolas-autocomplete").value = evento.nomesc;
 
     }
-
     onInputChangeDownshift(evento){
         let valor =  evento.target.value;
+
+        console.log('onInputChangeDownshift | ', valor);
+
         fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?search='+ valor)
             .then(resposta => {
                 if (resposta.ok){
@@ -95,50 +98,9 @@ class FormularioBuscaDeEscolas extends React.Component{
                         <legend>Busca de Escolas</legend>
                         <section className="form-row">
 
-
-                            <Downshift onChange={this.downshiftOnChange.bind(this)} itemToString={escolas_autocomplete => (escolas_autocomplete ? escolas_autocomplete.name : '')}>
-                               {/* // pass the downshift props into a callback*/}
-                                {({ getInputProps, getItemProps, isOpen, inputValue, highlightedIndex, selectedItem, getLabelProps }) => (
-                                    <div>
-
-                                       {/* // add a label tag and pass our label text to the getLabelProps function*/}
-                                        <label {...getLabelProps()}>Escolha uma Escola</label>
-
-                                        {/*// add our input element and pass our placeholder to the getInputProps function*/}
-                                        <input {...getInputProps({
-                                            onChange: this.onInputChangeDownshift.bind(this),
-                                            placeholder: "Escolha uma escola",
-                                            className: "form-control",
-                                            id: 'input-escolas-autocomplete'
-                                        })} />
-
-                                        {/*// if the input element is open, render the div else render nothing*/}
-                                        {isOpen ? (
-                                            <div className="downshift-dropdown">
-                                                {
-                                                    // filter the escolas_autocomplete and return items that match the inputValue
-
-                                                    this.state.escolas_autocomplete
-                                                        //.filter(item => !inputValue || item.nomesc.toLowerCase().includes(inputValue.toLowerCase()))
-
-                                                        /*.filter(i => !inputValue || i.includes(inputValue))*/
-                                                        // map the return value and return a div
-                                                        .map((item, index) => (
-                                                            <div className="dropdown-item"
-                                                                {...getItemProps({ key: item.nomesc, index, item })}
-                                                                style={{
-                                                                    backgroundColor: highlightedIndex === index ? 'lightgray' : 'white',
-                                                                    fontWeight: selectedItem === item ? 'bold' : 'normal',
-                                                                }}>
-                                                                {item.nomesc}
-                                                            </div>
-                                                        ))
-                                                }
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                )}
-                            </Downshift>
+                            <article className="form-group col-md-4">
+                                <AutocompleteComDownshift  escolas_autocomplete = {this.state.escolas_autocomplete} onInputChangeDownshift = {this.onInputChangeDownshift.bind(this)} downshiftOnChange = {this.downshiftOnChange.bind(this)} />
+                            </article>
 
 
                             <article className="form-group col-md-4">
@@ -175,4 +137,3 @@ class FormularioBuscaDeEscolas extends React.Component{
 
 }
 export default FormularioBuscaDeEscolas
-
