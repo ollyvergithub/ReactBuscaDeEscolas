@@ -10,16 +10,16 @@ class Autocomplete extends React.Component{
     render() {
         return (
             <article className="form-group col-md-4">
-                <select className="form-control" id='esola-autocomplete'>
+                <ul className="form-control" id='escola-autocomplete'>
                     {
                         this.props.escolaAutoComplete.map(escola => {
                             return (
-                              <option>Nome: {escola.nomesc}</option>
+                                <li><a href="#"> Nome: {escola.nomesc}</a></li>
                             );
                         })
                     }
 
-                </select>
+                </ul>
             </article>
 
         );

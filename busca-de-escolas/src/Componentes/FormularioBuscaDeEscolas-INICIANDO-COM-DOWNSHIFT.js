@@ -2,13 +2,26 @@ import React from 'react';
 
 // Meus Componentes
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
+import InputCustomizado from './InputCustomizado';
 import SelectCustomizado from './SelectCustomizado';
+import Autocomplete from './Autocomplete';
+
+import { render } from "react-dom";
 import Downshift from 'downshift';
+
+/*const books = [
+    { name: 'Harry Potter' },
+    { name: 'Net Moves' },
+    { name: 'Half of a yellow sun' },
+    { name: 'The Da Vinci Code' },
+    { name: 'Born a crime' },
+];*/
+
 class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {escolas_autocomplete: [], nomeEscolaInput: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: []};
+        this.state = {books: [], nomeEscolaInput: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: [], escolas_autocomplete: [] };
     }
 
     componentWillMount() {
@@ -35,6 +48,7 @@ class FormularioBuscaDeEscolas extends React.Component{
             .then(dres => {
                 this.setState({dres: dres.results});
             });
+
     }
 
     buscaEscolas(evento){
@@ -62,15 +76,37 @@ class FormularioBuscaDeEscolas extends React.Component{
         this.setState({dreSelect: evento.target.value });
     }
 
+    escolheEscola(evento){
+        evento.preventDefault();
+        this.setState({nomeEscolaInput:evento.target.value });
+        fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?search='+this.state.nomeEscolaInput)
+            .then(resposta => {
+                if (resposta.ok){
+                    return resposta.json();
+                }else {
+                    throw new Error('Não foi possível escola Autocomplete');
+                }
+            })
+            .then(escolas_autocomplete =>{
+                this.setState({escolas_autocomplete: escolas_autocomplete.results});
+            });
+    }
+
+
+
     downshiftOnChange(evento){
         console.log('Entrei no downshiftOnChange');
-        this.setState({nomeEscolaInput:evento.nomesc });
-        document.getElementById("input-escolas-autocomplete").value = evento.nomesc;
+        alert(`your favourite movie is ${evento.nomesc}`)
+        this.setState({nomeEscolaInput:evento.nomesc })
+
+        document.getElementById("downshift-0-input").value = evento.nomesc;
 
     }
 
     onInputChangeDownshift(evento){
+
         let valor =  evento.target.value;
+
         fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?search='+ valor)
             .then(resposta => {
                 if (resposta.ok){
@@ -82,9 +118,11 @@ class FormularioBuscaDeEscolas extends React.Component{
             })
             .then(escolas_autocomplete =>{
                 //debugger;
-                this.setState({escolas_autocomplete: escolas_autocomplete.results});
-                console.log('This State - escolas_autocomplete', this.state.escolas_autocomplete);
+                this.setState({books: escolas_autocomplete.results});
+                console.log('This State - BOOKS', this.state.books);
             });
+
+
     }
 
     render() {
@@ -96,12 +134,12 @@ class FormularioBuscaDeEscolas extends React.Component{
                         <section className="form-row">
 
 
-                            <Downshift onChange={this.downshiftOnChange.bind(this)} itemToString={escolas_autocomplete => (escolas_autocomplete ? escolas_autocomplete.name : '')}>
-                               {/* // pass the downshift props into a callback*/}
+                            <Downshift onChange={this.downshiftOnChange.bind(this)} itemToString={books => (books ? books.name : '')}>
+                                {/* // pass the downshift props into a callback*/}
                                 {({ getInputProps, getItemProps, isOpen, inputValue, highlightedIndex, selectedItem, getLabelProps }) => (
                                     <div>
 
-                                       {/* // add a label tag and pass our label text to the getLabelProps function*/}
+                                        {/* // add a label tag and pass our label text to the getLabelProps function*/}
                                         <label {...getLabelProps()}>Escolha uma Escola</label>
 
                                         {/*// add our input element and pass our placeholder to the getInputProps function*/}
@@ -109,27 +147,26 @@ class FormularioBuscaDeEscolas extends React.Component{
                                             onChange: this.onInputChangeDownshift.bind(this),
                                             placeholder: "Escolha uma escola",
                                             className: "form-control",
-                                            id: 'input-escolas-autocomplete'
                                         })} />
 
                                         {/*// if the input element is open, render the div else render nothing*/}
                                         {isOpen ? (
                                             <div className="downshift-dropdown">
                                                 {
-                                                    // filter the escolas_autocomplete and return items that match the inputValue
+                                                    // filter the books and return items that match the inputValue
 
-                                                    this.state.escolas_autocomplete
-                                                        //.filter(item => !inputValue || item.nomesc.toLowerCase().includes(inputValue.toLowerCase()))
+                                                    this.state.books
+                                                        .filter(item => !inputValue || item.nomesc.toLowerCase().includes(inputValue.toLowerCase()))
 
                                                         /*.filter(i => !inputValue || i.includes(inputValue))*/
                                                         // map the return value and return a div
                                                         .map((item, index) => (
                                                             <div className="dropdown-item"
-                                                                {...getItemProps({ key: item.nomesc, index, item })}
-                                                                style={{
-                                                                    backgroundColor: highlightedIndex === index ? 'lightgray' : 'white',
-                                                                    fontWeight: selectedItem === item ? 'bold' : 'normal',
-                                                                }}>
+                                                                 {...getItemProps({ key: item.nomesc, index, item })}
+                                                                 style={{
+                                                                     backgroundColor: highlightedIndex === index ? 'lightgray' : 'white',
+                                                                     fontWeight: selectedItem === item ? 'bold' : 'normal',
+                                                                 }}>
                                                                 {item.nomesc}
                                                             </div>
                                                         ))
