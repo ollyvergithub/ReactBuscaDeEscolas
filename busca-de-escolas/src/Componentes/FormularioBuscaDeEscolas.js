@@ -4,12 +4,22 @@ import React from 'react';
 import ExibeEscolasRetornadasPelaBusca from './ExibeEscolasRetornadasPelaBusca';
 import SelectCustomizado from './SelectCustomizado';
 import AutocompleteComDownshift from './AutocompleteComDownshift';
+import Paginacao from './Paginacao'
 
 class FormularioBuscaDeEscolas extends React.Component{
 
     constructor(){
         super();
-        this.state = {escolas_autocomplete: [], nomeEscolaInput: '', tipoEscola: [], tipoEscolaSelect: '', dres: [], dreSelect: '', listaDeEscolasRetornadasPelaBusca: []};
+        this.state = {
+            escolas_autocomplete: [],
+            nomeEscolaInput: '',
+            tipoEscola: [], tipoEscolaSelect: '',
+            dres: [],
+            dreSelect: '',
+            listaDeEscolasRetornadasPelaBusca: [],
+            PaginacaoPaginasTotal: 0,
+            PaginacaoPaginaAtual: 1,
+        };
     }
 
     componentWillMount() {
@@ -40,19 +50,39 @@ class FormularioBuscaDeEscolas extends React.Component{
 
     buscaEscolas(evento){
         evento.preventDefault();
+
+        // Para a Paginação
+        this.setState({PaginacaoPaginaAtual:1});
+        this.setState({PaginacaoPaginasTotal:0});
+
         fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?tipoesc=' + this.state.tipoEscolaSelect + '&search=' + this.state.nomeEscolaInput + '&dre=' +  this.state.dreSelect)
             .then(resposta =>{
                 if (resposta.ok){
                     return resposta.json();
                 }else {
-                    console.log('Não foi possivel buscar as escolas filtradas');
                     throw new Error('Não foi possivel buscar as escolas filtradas')
                 }
             })
             .then(lista_escolas_filtradas =>{
                 this.setState({listaDeEscolasRetornadasPelaBusca: lista_escolas_filtradas.results});
-                console.log('Lista de Escolas Retornadas pela Busca : ', lista_escolas_filtradas);
+                this.setState({PaginacaoPaginasTotal: lista_escolas_filtradas.count});
+                this.setState({PaginacaoPaginasTotal: Math.ceil((lista_escolas_filtradas.count)/10)});
             })
+    }
+
+    buscaEscolasPaginacao(page){
+        fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?tipoesc=' + this.state.tipoEscolaSelect + '&search=' + this.state.nomeEscolaInput + '&dre=' +  this.state.dreSelect + '&page='+ page)
+            .then(resposta =>{
+                if (resposta.ok){
+                    return resposta.json();
+                }else {
+                    throw new Error('Não foi possivel buscar as escolas filtradas')
+                }
+            })
+            .then(lista_escolas_filtradas =>{
+                this.setState({listaDeEscolasRetornadasPelaBusca: lista_escolas_filtradas.results});
+            })
+
     }
 
     escoheTipoEscola(evento){
@@ -64,7 +94,6 @@ class FormularioBuscaDeEscolas extends React.Component{
     }
 
     downshiftOnChange(evento){
-        console.log('Entrei no downshiftOnChange');
         this.setState({nomeEscolaInput:evento.nomesc });
         document.getElementById("input-escolas-autocomplete").value = evento.nomesc;
 
@@ -72,21 +101,16 @@ class FormularioBuscaDeEscolas extends React.Component{
     onInputChangeDownshift(evento){
         let valor =  evento.target.value;
 
-        console.log('onInputChangeDownshift | ', valor);
-
         fetch('https://hom-escolaaberta.sme.prefeitura.sp.gov.br/api/escolas/?search='+ valor)
             .then(resposta => {
                 if (resposta.ok){
                     return resposta.json();
                 }else {
-                    console.log('Não foi possível escola Autocomplete');
                     throw new Error('Não foi possível escola Autocomplete');
                 }
             })
             .then(escolas_autocomplete =>{
-                //debugger;
                 this.setState({escolas_autocomplete: escolas_autocomplete.results});
-                console.log('This State - escolas_autocomplete', this.state.escolas_autocomplete);
             });
     }
 
@@ -130,8 +154,11 @@ class FormularioBuscaDeEscolas extends React.Component{
                     )
                 }
 
-            </div>
+                {
+                    this.state.PaginacaoPaginasTotal > 0 ? (<Paginacao buscaEscolasPaginacao = {this.buscaEscolasPaginacao.bind(this)} PaginacaoPaginasTotal = {this.state.PaginacaoPaginasTotal}/>) : (null)
+                }
 
+            </div>
         );
     }
 
